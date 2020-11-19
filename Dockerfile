@@ -1,6 +1,6 @@
 FROM alpine:3.12.0 AS unzip
 
-COPY foundryvtt-0.6.5.zip foundryvtt.zip
+COPY foundryvtt-0.7.7.zip foundryvtt.zip
 
 RUN mkdir /foundryvtt && unzip foundryvtt.zip -d /foundryvtt
 
