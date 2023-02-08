@@ -3,5 +3,5 @@ foundryvtt
 foundryvtt.zip
 data
 builds
-node_modules
 .env
+Dockerfile

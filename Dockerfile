@@ -1,15 +1,22 @@
-FROM alpine:3.12.0 AS unzip
+FROM golang:1.20 AS build
 
-COPY foundryvtt-0.7.7.zip foundryvtt.zip
+WORKDIR /usr/src/app
 
-RUN mkdir /foundryvtt && unzip foundryvtt.zip -d /foundryvtt
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
-FROM node:14.4.0-alpine3.12
+COPY . .
+RUN go build -v -o /foundryvtt-runner ./...
 
-COPY --from=unzip /foundryvtt/resources/app /foundryvtt
+FROM node:19-bullseye
+
+COPY --from=build /foundryvtt-runner /usr/local/bin/foundryvtt-runner
 
 EXPOSE 30000
 
-VOLUME /data /config
+VOLUME /data /config /builds
 
-CMD [ "node", "/foundryvtt/main.js", "--dataPath=/data" ]
+ENTRYPOINT ["/bin/sh", "-c"]
+
+CMD [ "/usr/local/bin/foundryvtt-runner" ]

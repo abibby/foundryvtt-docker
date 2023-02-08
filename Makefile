@@ -11,7 +11,3 @@ push: has-version
 
 has-version:
 	@test -n '$(VERSION)' || (printf "\nMissing argument VERSION\n\n" && exit 1)
-
-
-run:
-	docker run -p 30000:30000 -v $(PWD)/data:/data abibby/foundryvtt
